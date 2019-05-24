@@ -1,0 +1,147 @@
+<table class="layui-table">
+  <colgroup>
+    <col width="50">
+    <col>
+    <col>
+    <col>
+    <col>
+    <col width="120">
+  </colgroup>
+  <thead>
+    <tr>
+      <th></th>
+      <th>分类名称</th>
+      <th>是否显示</th>
+      <th>导航显示</th>
+      <th>添加时间</th>
+      <th>操作</th>
+    </tr> 
+  </thead>
+  <tbody>
+  {volist name="cate" id="c"}
+  <tr cate_pid="{$c.cate_pid}" cate_id="{$c.cate_id}">
+      <td><a class="sh" href="javascript:void(0)">+</a></td>
+      <td>{:str_repeat('&ensp;',$c.level*4)}{$c.cate_name}</td>
+      <td>{$c.cate_show}</td>
+      <td>{$c.cate_nav}</td>
+      <td>{$c.cate_time}</td>
+      <td>
+        <div class="layui-btn-group">
+      <button class="layui-btn layui-btn-sm edit">
+        <i class="layui-icon">&#xe642;</i>
+      </button>
+      <button class="layui-btn layui-btn-sm del">
+        <i class="layui-icon">&#xe640;</i>
+      </button>
+    </div>
+      </td>
+   </tr>
+   {/volist}
+  </tbody>
+</table>
+
+
+<script>
+  //加载layui内置模块
+  layui.use(['layer','jquery'],function(){
+    var layer=layui.layer,$=layui.jquery;
+
+
+    //为编辑按钮绑定事件
+    $('.edit').click(function(){
+      location.href="{:url('category/edit')}?cate_id="+{$c.cate_id};
+    });
+
+
+    //为删除按钮绑定事件
+    $('.del').click(function(){
+      var _this=$(this);
+      layer.confirm('确定删除？',{icon:3},function(index){
+        var cate_id=_this.parents('tr').attr('cate_id');
+        $.post(
+          "{:url('category/delete')}",
+          {cate_id:cate_id},
+          function(data){
+            layer.msg(data.content,{icon:data.icon,time:1000},function(){
+              if(data.code==1){
+                _this.parents('tr').remove();
+              };
+            });
+          },
+          'json'
+          );
+        layer.close(index);
+      });
+    });
+
+
+    //当页面加载后，只显示顶级分类
+    $('tr:gt(0)').each(function(){
+      var cate_pid=$(this).attr('cate_pid');
+      if(cate_pid!=0){
+        $(this).hide();
+      };
+    });
+    
+    
+    //为所有的+添加点击事件
+    $('.sh').click(function(){
+      //获取sh中的文本
+      var shText=$(this).text();
+      //判断文本是否等于+
+      if(shText=='+'){
+        //+变-
+        $(this).text('-');
+        //获取被点击行的cate_id
+        var cate_id=$(this).parents('tr').attr('cate_id');
+        //展示子类
+        showTr(cate_id);
+      }else{
+        //-变+
+        $(this).text('+');
+        //获取被点击行的cate_id
+        var cate_id=$(this).parents('tr').attr('cate_id');
+        //隐藏子类
+        hideTr(cate_id);
+      }
+    });
+
+
+    //展示子类
+    function showTr(cate_pid){
+      $('tr').each(function(){
+        if($(this).attr('cate_pid')==cate_pid){
+          $(this).show();
+        };
+      });
+    }
+
+
+    //隐藏子类
+    function hideTr(cate_pid){
+      $('tr').each(function(){
+        if($(this).attr('cate_pid')==cate_pid){
+          $(this).hide();
+          hideTr($(this).attr('cate_id'));
+        };
+      });
+    }
+
+    //是否显示，ajax修改
+    $('td:nth-child(3)').click(function(){
+      var _this =$(this);
+      $.post(
+          "{:url('category/cateShow')}",
+          {cate_show:_this.text(),cate_id:_this.parent('tr').attr('cate_id')},
+          function(data){
+            layer.msg(data.content,{icon:data.icon,time:2000},function(){
+                 if(data.code==1){
+              _this.text()=='是' ? _this.text('否') : _this.text('是');
+            };
+            });
+           },
+          'json'
+        );
+    });
+});
+</script>

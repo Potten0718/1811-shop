@@ -1,0 +1,70 @@
+
+<form class="layui-form" action="" onsubmit="false">
+  <div class="layui-form-item">
+    <label class="layui-form-label">角色名</label>
+    <div class="layui-input-block">
+      <input type="text" name="role_name"  required  lay-verify="required|checkOnly" placeholder="" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">描述</label>
+    <div class="layui-input-block">
+      <textarea name="role_content" placeholder="" class="layui-textarea"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<script>
+    layui.use(['layer','jquery','form'],function(){
+      var layer=layui.layer,$=layui.jquery,form=layui.form;
+
+      form.verify({
+        checkOnly:function(value){
+          var reg=/^\w{0,30}$/;
+          if(!reg.test(value)){
+            return "角色名不能超过30个字符，且是数字、字母、下划线组成";
+          }
+
+          //验证唯一性
+          var text;
+          $.ajax({
+            // 
+            url:"{:url('role/checkOnly')}",
+            method:'post',
+            async:false,
+            data:{role_name:value},
+            success:function(data){
+              // console.log(data);
+              if(data>0){
+                text="用户名已存在";
+              }
+            },
+            dataType:'json'
+          });
+          return text;
+        }
+      });
+
+      //提交
+      form.on('submit(formDemo)',function(data){
+        $.post(
+            "{:url('role/save')}",
+            data.field,
+            function(res){
+              layer.msg(res.content,{icon:res.icon,time:2000},function(){
+                if(res.code==1){
+                  location.href="{:url('role/index')}";
+                }
+              });
+            },
+            'json'
+          );
+        return false;
+      });
+    });
+</script>

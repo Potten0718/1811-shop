@@ -1,0 +1,72 @@
+
+<form class="layui-form  layui-form-pane" onsubmit="return false" method="post" action="{:url('admin/save')}">
+  <div class="layui-form-item" >
+    <label class="layui-form-label">用户名</label>
+    <div class="layui-input-block">
+      <input type="text" name="asdf_name"   lay-verify="required|checkName" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">电话</label>
+    <div class="layui-input-block">
+      <input type="text" name="asdf_tel"   lay-verify="required|phone" placeholder="请输入电话" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="go">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+ 
+<script type="text/javascript">
+    layui.use(['layer','form','jquery'],function(){
+      layer=layui.layer,form=layui.form,$=layui.jquery;
+
+      form.verify({
+        checkName:function(value){
+          //验证正则
+          $reg=/^[\u4e00-\u9fa5]{2,5}$/;
+
+          if(!$reg.test(value)){
+            return "用户名必须是2-5为字符组成";
+          }
+
+          var text;
+          $.ajax({
+              url:"{:url('asdf/checkName')}",
+              async:false,
+              data:{asdf_name:value},
+              method:'post',
+              success:function(data){
+                if(data>0){
+                  text="用户名已存在";
+                }
+              },
+              dataType:'json'
+          });
+          return text;
+        }
+      });
+
+
+      form.on('submit(go)',function(data){
+        $.post(
+            "{:url('asdf/save')}",
+            data.field,
+            function(res){
+              layer.msg(res.content,{icon:res.icon,time:2000},function(){
+                if(res.code==1){
+                  location.href="{url:('asdf/index')}"
+                }
+              })
+            }
+          )
+        return false;
+      });
+
+    });
+
+</script>
+

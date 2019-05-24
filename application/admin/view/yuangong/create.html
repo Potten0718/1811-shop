@@ -1,0 +1,80 @@
+<form class="layui-form  layui-form-pane" onsubmit="return false" method="post" action="{:url('admin/save')}">
+  <div class="layui-form-item" >
+    <label class="layui-form-label">员工账号</label>
+    <div class="layui-input-inline">
+      <input type="text" name="yg_zhanghao"   autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">所属部门</label>
+    <div class="layui-input-inline">
+      <input type="text" name="bm_name"   autocomplete="off" class="layui-input">
+    </div>
+    </div>
+  <div class="layui-form-item" >
+    <label class="layui-form-label">出生日期</label>
+    <div class="layui-input-inline">
+      <input type="text" name="yg_csrq"   autocomplete="off" class="layui-input">
+    </div>
+  </div>
+     <div class="layui-form-item">
+    <label class="layui-form-label">学历</label>
+    <div class="layui-input-inline">
+      <input type="text" name="yg_xl"  class="layui-input" lay-skin="switch" >
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">性别</label>
+    <div class="layui-input-inline">
+      <input type="radio" name="yg_sex" value="男" class="layui-input">男
+      <input type="radio" name="yg_sex" value="女" class="layui-input">女
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">姓名</label>
+    <div class="layui-input-inline">
+      <input type="text" name="yg_name"  s  autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-inline">
+      <button class="layui-btn" lay-submit lay-filter="go">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+ 
+<script type="text/javascript">
+//加载layipt内置模块
+layui.use(['form','jquery','layer'],function(){
+  var form=layui.form;
+  var $ = layui.jquery;
+  var layer=layui.layer;
+ 
+ form.on('submit(go)',function(data){
+    // console.log(data);
+    // 发送ajax请求，做添加
+    $.post(
+      "{:url('yuangong/save')}",
+      data.field,
+      function(data){
+        layer.msg(data.content,{icon:data.icon,time:2000},function(){
+          if(data.code==1){
+            location.href="{:url('yuangong/index')}";
+          };
+        });
+      },
+      'json'
+    );
+    return false;//阻止表单提交
+  });
+
+  
+
+
+});
+
+
+
+</script>
+

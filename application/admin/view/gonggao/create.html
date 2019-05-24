@@ -1,0 +1,75 @@
+    <form class="layui-form layui-form-pane" action="">
+      <div class="layui-form-item">
+        <label class="layui-form-label">公告标题</label>
+        <div class="layui-input-block">
+          <input type="text" name="gong_title" required  lay-verify="required|checkOnly" placeholder="请输入标题" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+     
+      <div class="layui-form-item">
+        <label class="layui-form-label">是否发布</label>
+        <div class="layui-input-block">
+          <input type="radio" name="release_status" value="是" title="是" checked>
+          <input type="radio" name="release_status" value="否" title="否" >
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文本域</label>
+        <div class="layui-input-block">
+          <textarea name="gong_content" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+     
+    <script>
+    //Demo
+    layui.use(['form','jquery','layer'], function(){
+      var form = layui.form,$=layui.jquery,layer=layui.layer;
+      
+      form.verify({
+        checkOnly:function(value){
+          var text;
+          $.ajax({
+            url:"{:url('gonggao/checkOnly')}",
+            method:"post",
+            async:false,
+            data:{gong_title:value},
+            success:function(data){
+              if(data>0){
+                text="标题名称已经存在";
+              };
+            },
+            dataType:'josn'
+          });
+          return text;
+        }
+      });
+
+
+      //监听提交
+      form.on('submit(formDemo)', function(data){
+        $.post(
+          "{:url('gonggao/save')}",
+          data.field,
+          function(msg){
+            layer.msg(msg.content,{icon:msg.icon,time:1000},function(){
+              if(msg.code==1){
+                location.href="{:url('gonggao/index')}";
+              };
+            });
+          },
+          'json'
+          );
+        return false;
+      });
+    });
+    </script>
+          

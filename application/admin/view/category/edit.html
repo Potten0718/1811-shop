@@ -1,0 +1,85 @@
+<form class="layui-form layui-form-pane" action="" onsubmit="return false">
+  <div class="layui-form-item">
+    <label class="layui-form-label">添加分类</label>
+    <div class="layui-input-block">
+      <input type="text" name="cate_name" value="{$data.cate_name}" required lay-verify="required|checkName" placeholder="请输分类名称" autocomplete="on" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">是否显示</label>
+    <div class="layui-input-block">
+      <input type="radio" name="cate_show" value="是" title="是" {if $data.cate_show=='是'}checked{/if}>
+      <input type="radio" name="cate_show" value="否" title="否" {if $data.cate_show=='否'}checked{/if}>
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">导航显示</label>
+    <div class="layui-input-block">
+      <input type="radio" name="cate_nav" value="是" title="是" {if $data.cate_nav=='是'}checked{/if}>
+      <input type="radio" name="cate_nav" value="否" title="否" {if $data.cate_nav=='否'}checked{/if}>
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">父级分类</label>
+    <div class="layui-input-inline">
+      <select name="cate_pid" lay-verify="required" id="">
+        <option value="0">顶级分类</option>
+        {volist name="data" id="c"}
+        <option value="{$c.cate_id}">{:str_repeat('&ensp;',$c.level*4)}{$c.cate_name}</option>
+        {/volist}
+      </select>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="addCate">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+ 
+
+
+<script>
+//Demo
+layui.use(['form','jquery','layer'], function(){
+  var form = layui.form, $ =layui.jquery, layer =layui.layer;
+
+  //验证分类名称唯一性
+  form.verify({
+    checkName:function(value){
+        var text;
+        $.ajax({
+        url:"{:url('categroy/checkName')}",
+        method:'post',
+        data:{cate_name:value},
+        async:false,
+        success:function(data){
+            if(data==1){
+              text="分类名称以存在";
+            };
+        },
+        dataType:'json'
+      });
+      return text;
+    }
+  });
+  
+  //监听提交
+  form.on('submit(addCate)', function(data){
+      $.post(
+          "{:url('category/save')}",
+          data.field,
+          function(data){
+            layer.msg(data.content,{icon:data.icon,time:2000},function(){
+              if(data.code==1){
+                location.href="{:url('category/index')}";
+              };
+            });
+          },
+          'json'
+        );
+        return false;
+  });
+});
+</script>

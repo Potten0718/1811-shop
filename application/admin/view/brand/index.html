@@ -1,0 +1,71 @@
+<table id="brand" lay-filter="test"></table>
+<script type="text/html" id="brand_bar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="brand_logo">
+  <img src="{{d.brand_logo}}" width="25" alt="暂无图片" >
+</script>
+<script type="text/javascript">
+ layui.use(['layer','table','jquery'],function(){
+      var table=layui.table,layer=layui.layer,$=layui.jquery;
+      //表名--render-固定用法
+     table.render({
+        elem:'#brand',
+        url:"{:url('Brand/indexData')}", 
+        even:true,//隔行换色
+        cols:[[
+              {field:'brand_id',title:'编号',width:60},
+              {field:'brand_name',title:'品牌名称',edit:'text'},
+              {field:'brand_show',title:'是否展示',width:90},
+              {field:'brand_url',title:'品牌地址',width:200,edit:'text'},
+              {templet:'#brand_logo',title:'品牌logo'},
+              {field:'brand_time',title:'添加时间',width:180},
+              {field:'brand_sort',title:'品牌排序',width:120,edit:'text'},
+              {toolbar:'#brand_bar',title:'操作',width:120}
+        ]]
+     }); 
+
+    table.on('tool(test)',function(obj){
+      var data = obj.data, layEvent = obj.event;
+
+      if(layEvent=='edit'){
+        location.href="{:url('brand/edit')}?brand_id="+data.brand_id;
+      }else if(layEvent=='del'){
+        layer.confirm('确认要删除吗？',{icon:3,title:'询问'},function(index){
+          $.post(
+              "{:url('brand/delete')}",
+              {brand_id: data.brand_id},
+              function(data){
+                layer.msg(data.content,{icon:data.icon,time:1000},function(){
+                  if(data.code==1){
+                    obj.del();
+                    layer.close(index);
+                  };
+                });
+              },
+              'json'
+            );
+        });
+      }
+    });
+
+    //监听单元格编辑
+    table.on('edit(test)',function(obj){
+      $.post(
+          "{:url('brand/editTable')}",
+          {fieldName: obj.field,fieldValue: obj.value,brand_id: obj.data.brand_id},
+          function(data){
+            layer.msg(data.content,{icon:data.icon,time:1000});
+          },
+          'json'
+        );
+    });
+    
+    function changeSize(index){
+      var brand_log=index.src;
+      layer.alert("<img src='"+brand_log+"' />",{title:'图片预览'});
+    }
+
+  }); 
+</script>

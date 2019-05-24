@@ -1,0 +1,76 @@
+<!--数据容器-->
+<table id="demo" lay-filter="test"></table>
+
+<!--列工具条模板-->
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/javascript">
+  layui.use(['table','jquery','layer'],function(){
+    var table = layui.table, $ =layui.jquery, layer=layui.layer;
+
+  //render()layui内置模块table中自带的方法，用于渲染表格
+  table.render({
+    elem: '#demo',//选择器，指定要渲染的表格
+    url: "{:url('admin/indexdata')}",
+    title: '超级无敌列表页',
+    page:true,
+    limit:2,
+    limits:[2,4,6,8,],
+    cols: [[
+        {field: 'admin_id',title:'编号',width:60},
+        {field: 'admin_name',title:'用户名'},
+        {field: 'admin_tel',title:'电话',edit:'text'},
+        {field: 'admin_email',title:'邮箱',edit:'text'},
+        {field: 'admin_status',title:'状态'},
+        {field: 'admin_create',title:'添加时间'},
+        {toolbar: '#barDemo',title:'操作',width:120},
+    ]]
+  });
+
+
+
+
+  //监听工具条
+   table.on('tool(test)',function(obj){
+     var data =obj.data;//获取当前行数据
+     var layEvent = obj.event;//获取工具条事件类型
+
+    if(layEvent =='edit'){
+        location.href="{:url('admin/edit')}?admin_id="+data.admin_id;
+    }else if(layEvent =='del'){
+      //弹出确认窗口，如果用户点击确认则执行回调函数
+      layer.confirm('真的要删除吗',function(index){
+        //发送ajax请求，做数据的删除
+        $.post(
+            "{:url('admin/delete')}",
+            {admin_id:data.admin_id},
+            function(data){
+              layer.msg(data.content,{icon:data.cion,time:2000},function(){
+                if(data.code==1){
+                  obj.del();
+                }
+              });
+            },
+            'json'
+          )
+      });
+   }
+    });
+
+  //监听单元格编辑
+    table.on('edit(test)',function(obj){
+        //发送ajax请求，更改数据
+        $.post(
+            "{:url('admin/editTable')}",
+            {fieldName:obj.field,fieldValue:obj.value,admin_id:obj.data.admin_id},
+            function(data){
+                layer.msg(data.content,{icon:data.icon,time:1000});
+            },
+            'json'
+          );
+    });  
+});
+</script>

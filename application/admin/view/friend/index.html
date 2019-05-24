@@ -1,0 +1,31 @@
+<table class="layui-table">
+  <colgroup>
+    <col width="150">
+    <col width="200">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>友链id</th>
+      <th>友链名称</th>
+      <th>友链网址</th>
+      <th>添加时间</th>
+      <th>LOGO</th>
+      <th>操作</th>
+    </tr> 
+  </thead>
+  <tbody>
+    {volist name="data" id="vo"}
+    <tr>
+      <td>{$i}</td>
+      <td>{$vo.friend_name}</td>
+      <td>{$vo.friend_url}</td>
+      <td>{$vo.friend_add_time}</td>
+      <td><img src="{$vo.friend_logo}" width="50" alt="暂无图片"></td>
+      <td>
+      [<a href="{:url('friend/delete',['friend_id'=>$vo.friend_id])}">删除</a>]       
+      </td>
+    </tr>
+    {/volist}
+  </tbody>
+</table>

@@ -1,0 +1,428 @@
+<script type="text/javascript" src="__STATIC__/index/js/n_nav.js"></script>
+<script src="__STATIC__/layui/layui.js"></script>
+<!--End Header End--> 
+<!--Begin Menu Begin-->
+{include file='public/nav' /}
+<!--End Menu End--> 
+<div class="i_bg">  
+    <div class="content mar_20">
+        <img src="__STATIC__/index/images/img1.jpg" />        
+    </div>
+    
+    <!--Begin 第一步：查看购物车 Begin -->
+    <div class="content mar_20">
+        <table border="0" class="car_tab" style="width:1200px; margin-bottom:50px;" cellspacing="0" cellpadding="0">
+          <tr>
+          <td><input type="checkbox" class="all" id="allbox"></td>
+            <td class="car_th" width="490">商品名称</td>
+            <td class="car_th" width="140">价格</td>
+            <td class="car_th" width="150">购买数量</td>
+            <td class="car_th" width="130">小计</td>
+            <td class="car_th" width="150">操作</td>
+          </tr>
+          {volist name="cartInfo" id="v"}
+          <tr goods_num="{$v.goods_num}" goods_id="{$v.goods_id}">
+            <td><input type="checkbox" class="box"></td>
+            <td>
+                <div class="c_s_img"><img src="{$v.goods_img}" width="73" height="73" /></div>
+                {$v.goods_name}
+            </td>
+            <td align="center">
+            {if condition="$v['add_price'] gt $v['goods_price']"}
+                <font color="red">比加入时减少了{$v['add_price']-$v['goods_price']}元</font><br>
+                {$v['goods_price']}
+            {else /}
+                {$v['goods_price']}
+            {/if}
+            </td>
+            <td align="center">
+                <div class="c_num">
+                    <input type="button" value="" class="car_btn_1" />
+                    <input type="text" value="{$v.buy_number}" class="car_ipt" />  
+                    <input type="button" value=""  class="car_btn_2" />
+                </div>
+            </td>
+            <td align="center" style="color:#ff4e00;" >￥{$v.goods_price*$v.buy_number}</td>
+            <td align="center"><a class="del">删除</a>&nbsp; &nbsp;<a href="#">加入收藏</a></td>
+          </tr>
+          {/volist}
+          
+          
+          <tr height="70">
+            <td colspan="6" style="font-family:'Microsoft YaHei'; border-bottom:0;">
+                <label class="r_rad"><input type="checkbox" name="clear" checked="checked" /></label><label class="r_txt"  id="delMany">批量删除购物车</label>
+                <span class="fr" >商品总价：<b id="count" style="font-size:22px; color:#ff4e00;">0</b></span>
+            </td>
+          </tr>
+          <tr valign="top" height="150">
+            <td colspan="6" align="right">
+                <a href="#"><img src="__STATIC__/index/images/buy1.gif" /></a>&nbsp; &nbsp;
+                 <a href="javascript:;" id="conform"><img src="__STATIC__/index/images/buy2.gif" /></a>
+            </td>
+          </tr>
+        </table>
+        
+    </div>
+    <!--End 第一步：查看购物车 End--> 
+    
+    
+    <!--Begin 弹出层-删除商品 Begin-->
+    <div id="fade" class="black_overlay"></div>
+    <div id="MyDiv" class="white_content">             
+        <div class="white_d">
+            <div class="notice_t">
+                <span class="fr" style="margin-top:10px; cursor:pointer;" onclick="CloseDiv('MyDiv','fade')"><img src="__STATIC__/index/images/close.gif" /></span>
+            </div>
+<!--             <div class="notice_c">
+                
+                <table border="0" align="center" style="font-size:16px;" cellspacing="0" cellpadding="0">
+                  <tr valign="top">
+                    <td>您确定要把该商品移除购物车吗？</td>
+                  </tr>
+                  <tr height="50" valign="bottom">
+                    <td><a href="#" class="b_sure">确定</a><a href="#" class="b_buy">取消</a></td>
+                  </tr>
+                </table>
+                    
+            </div> -->
+        </div>
+    </div>    
+    <!--End 弹出层-删除商品 End-->
+    
+    
+    <!--Begin Footer Begin -->
+    <div class="b_btm_bg bg_color">
+        <div class="b_btm">
+            <table border="0" style="width:210px; height:62px; float:left; margin-left:75px; margin-top:30px;" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="72"><img src="__STATIC__/index/images/b1.png" width="62" height="62" /></td>
+                <td><h2>正品保障</h2>正品行货  放心购买</td>
+              </tr>
+            </table>
+            <table border="0" style="width:210px; height:62px; float:left; margin-left:75px; margin-top:30px;" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="72"><img src="__STATIC__/index/images/b2.png" width="62" height="62" /></td>
+                <td><h2>满38包邮</h2>满38包邮 免运费</td>
+              </tr>
+            </table>
+            <table border="0" style="width:210px; height:62px; float:left; margin-left:75px; margin-top:30px;" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="72"><img src="__STATIC__/index/images/b3.png" width="62" height="62" /></td>
+                <td><h2>天天低价</h2>天天低价 畅选无忧</td>
+              </tr>
+            </table>
+            <table border="0" style="width:210px; height:62px; float:left; margin-left:75px; margin-top:30px;" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="72"><img src="__STATIC__/index/images/b4.png" width="62" height="62" /></td>
+                <td><h2>准时送达</h2>收货时间由你做主</td>
+              </tr>
+            </table>
+        </div>
+    </div>
+    <div class="b_nav">
+        <dl>                                                                                            
+            <dt><a href="#">新手上路</a></dt>
+            <dd><a href="#">售后流程</a></dd>
+            <dd><a href="#">购物流程</a></dd>
+            <dd><a href="#">订购方式</a></dd>
+            <dd><a href="#">隐私声明</a></dd>
+            <dd><a href="#">推荐分享说明</a></dd>
+        </dl>
+        <dl>
+            <dt><a href="#">配送与支付</a></dt>
+            <dd><a href="#">货到付款区域</a></dd>
+            <dd><a href="#">配送支付查询</a></dd>
+            <dd><a href="#">支付方式说明</a></dd>
+        </dl>
+        <dl>
+            <dt><a href="#">会员中心</a></dt>
+            <dd><a href="#">资金管理</a></dd>
+            <dd><a href="#">我的收藏</a></dd>
+            <dd><a href="#">我的订单</a></dd>
+        </dl>
+        <dl>
+            <dt><a href="#">服务保证</a></dt>
+            <dd><a href="#">退换货原则</a></dd>
+            <dd><a href="#">售后服务保证</a></dd>
+            <dd><a href="#">产品质量保证</a></dd>
+        </dl>
+        <dl>
+            <dt><a href="#">联系我们</a></dt>
+            <dd><a href="#">网站故障报告</a></dd>
+            <dd><a href="#">购物咨询</a></dd>
+            <dd><a href="#">投诉与建议</a></dd>
+        </dl>
+        <div class="b_tel_bg">
+            <a href="#" class="b_sh1">新浪微博</a>            
+            <a href="#" class="b_sh2">腾讯微博</a>
+            <p>
+            服务热线：<br />
+            <span>400-123-4567</span>
+            </p>
+        </div>
+        <div class="b_er">
+            <div class="b_er_c"><img src="__STATIC__/index/images/er.gif" width="118" height="118" /></div>
+            <img src="__STATIC__/index/images/ss.png" />
+        </div>
+    </div>    
+    <div class="btmbg">
+        <div class="btm">
+            备案/许可证编号：蜀ICP备12009302号-1-www.dingguagua.com   Copyright © 2015-2018 尤洪商城网 All Rights Reserved. 复制必究 , Technical Support: Dgg Group <br />
+            <img src="__STATIC__/index/images/b_1.gif" width="98" height="33" /><img src="__STATIC__/index/images/b_2.gif" width="98" height="33" /><img src="__STATIC__/index/images/b_3.gif" width="98" height="33" /><img src="__STATIC__/index/images/b_4.gif" width="98" height="33" /><img src="__STATIC__/index/images/b_5.gif" width="98" height="33" /><img src="__STATIC__/index/images/b_6.gif" width="98" height="33" />
+        </div>      
+    </div>
+    <!--End Footer End -->    
+</div>
+
+</body>
+
+
+<!--[if IE 6]>
+<script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</html>
+
+<script>
+    $(function(){
+        layui.use(['layer'],function(){
+
+        //点击加号
+        $('.car_btn_2').click(function(){
+            var _this=$(this);
+
+            // 文本框数量加1
+            var buy_number=parseInt(_this.prev('input').val());
+            var goods_num=_this.parents('tr').attr('goods_num');
+            var goods_id=_this.parents('tr').attr('goods_id');
+            if(buy_number>=goods_num){
+                _this.prev('input').val(goods_num);
+            }else{
+                buy_number=buy_number+1;
+                _this.prev('input').val(buy_number);
+            }
+            var flag=0
+            $.ajax({
+                type:'post',
+                url:"{:url('Cart/changeNum')}",
+                data:{buy_number:buy_number,goods_id:goods_id},
+                async:false,
+                success:function(res){
+                    // console.log(111);
+                    // if(res.code==2){
+                    //     layer.msg(res.content,{icon:res.icon});
+                    //     flag=1;
+                    }
+            })
+            if(flag==1){
+                return false;
+            }
+            
+            // 重新获取小计
+            getTotal(goods_id,_this);
+
+            // 当前行的复选框选中
+            checkedTr(_this);
+            // 重新获取总价
+            getCount();
+        });
+
+        //失去焦点事件
+        $('.car_ipt').blur(function(){
+            var _this=$(this);
+
+            // 文本框数量加1
+            var buy_number=parseInt(_this.val());
+            var goods_num=_this.attr('goods_num');
+            var goods_id=_this.parents('tr').attr('goods_id');
+
+            if(buy_number>=goods_num){
+                _this.val(goods_num);
+            }else{
+                _this.val(buy_number);
+            }
+            var flag=0
+            $.ajax({
+                type:'post',
+                url:"{:url('Cart/changeNum')}",
+                data:{buy_number:buy_number,goods_id:goods_id},
+                async:false,
+                success:function(res){
+                    // console.log(111);
+                    // if(res.code==2){
+                    //     layer.msg(res.content,{icon:res.icon});
+                    //     flag=1;
+                    }
+            })
+            if(flag==1){
+                return false;
+            }
+            
+            // 重新获取小计
+            getTotal(goods_id,_this);
+
+            // 当前行的复选框选中
+            checkedTr(_this);
+            // 重新获取总价
+            getCount();
+        });
+
+        //点击减号
+        $('.car_btn_1').click(function(){
+            var _this=$(this);
+
+            // 文本框数量加1
+            var buy_number=parseInt(_this.next('input').val());
+            var goods_num=_this.parents('tr').attr('goods_num');
+            var goods_id=_this.parents('tr').attr('goods_id');
+            if(buy_number>=goods_num){
+                _this.next('input').val(goods_num);
+            }else{
+                buy_number=buy_number-1;
+                _this.next('input').val(buy_number);
+            }
+            var flag=0
+            $.ajax({
+                type:'post',
+                url:"{:url('Cart/changeNum')}",
+                data:{buy_number:buy_number,goods_id:goods_id},
+                async:false,
+                success:function(res){
+                    // if(res.code==2){
+                    //     layer.msg(res.font,{icon:res.icon});
+                    //     flag=1;
+                    // }
+                }
+
+            });
+            if(flag==1){
+                return false;
+            }
+            
+            // 重新获取小计
+            getTotal(goods_id,_this);
+
+            // 当前行的复选框选中
+            checkedTr(_this);
+            // 重新获取总价
+            getCount();
+        });
+
+        //点击复选框
+        $('.box').click(function(){
+            //获取总价
+            getCount();
+        });
+
+        //点击全选
+        $('#allbox').click(function(){
+            var _this=$(this);
+            var static=_this.prop('checked');
+            $('.box').porp('checked',static);
+
+            //调用商品总价
+            getCount();
+        });
+
+        //点击删除
+        $('.del').click(function(){
+            var _this=$(this);
+            var goods_id=_this.parents('tr').attr('goods_id');
+
+            $.post(
+                "{:url('cart/cartDel')}",
+                {goods_id:goods_id},
+                function(res){
+                    layer.msg(res.font,{icon:res.code});
+                    if(res.code==1){
+                        _this.parents('tr').remove();
+                    }
+                },
+                'json'
+            );
+
+            //调用商品总价
+            getCount();
+        });
+
+        //点击批量删除
+        $('#delMany').click(function(){
+            var goods_id='';
+            $('.box:checked').each(function(index){
+                goods_id+=$(this).parents("tr").attr('goods_id')+',';
+            });
+            goods_id=goods_id.substr(0,goods_id.length-1);
+            $.post(
+                    "{:url('cart/cartDel')}",
+                    {goods_id:goods_id},
+                    function(res){
+                        $('.box:checked').each(function(index){
+                            $(this).parents("tr").remove();
+                        });
+                    },
+                    'json'
+                );
+
+            //调用商品总价
+            getCount();
+        });
+
+        // 获取小计
+        function getTotal(goods_id,_this)
+        {
+            $.post(
+                "{:url('cart/getTotal')}",
+                {goods_id:goods_id},
+                function(res){
+                   _this.parents('td').next('td').text("￥"+res);
+                }
+            );
+        }
+
+        // 当前行的复选框选中
+        function checkedTr(_this)
+        {
+            // console.log(_this);
+            _this.parents('tr').find("input[class='box']").prop('checked',true);
+            //计算总价
+            getCount();
+        }
+
+        // 重新获取总价
+        function getCount()
+        {
+            //获取选中的复选框中的id
+            var goods_id="";
+            $('.box:checked').each(function(index){
+                goods_id+=$(this).parents('tr').attr('goods_id')+',';
+            });
+            goods_id=goods_id.substr(0,goods_id.length-1);
+            $.post(
+                    "{:url('cart/getCount')}",
+                    {goods_id:goods_id},
+                    function(res){
+                        $('#count').text("￥"+res);
+                    }
+                );
+        }
+
+        //点击结算
+        $('#conform').click(function(){
+            var len=$('.box:checked').length;
+            if(len==0){
+                layer.msg('请至少选择一件商品',{icon:2});
+                return false;
+            }
+       
+
+        //获取选中的商品id
+        var goods_id='';
+        $('.box:checked').each(function(index){
+            goods_id+=$(this).parents('tr').attr('goods_id')+',';
+            console.log(goods_id);
+        });
+        goods_id=goods_id.substr(0,goods_id.length-1);
+        location.href="{:url('cart/conform')}?goods_id="+goods_id;
+         });
+    });
+    });
+</script>

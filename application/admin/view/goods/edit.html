@@ -1,0 +1,205 @@
+<form class="layui-form layui-form-pane" > <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+  <input type="hidden" name="goods_id" value="{$goods.goods_id}">
+  <div class="layui-form-item">
+    <label class="layui-form-label">商品名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="goods_name" value="{$goods.goods_name}" placeholder="请输入商品名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">商品价格</label>
+    <div class="layui-input-block">
+      <input id="price" type="text" name="goods_price" value="{$goods.goods_price}"  placeholder="请输入商品价格" autocomplete="off" class="layui-input ">
+    </div>
+  </div>
+   <div class="layui-form-item">
+    <label class="layui-form-label">市场价格</label>
+    <div class="layui-input-block"><!-- mprice-自变量 -->
+      <input id="mprice" type="text" name="goods_mprice" value="{$goods.goods_mprice}"  placeholder="请输入商品名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+   <div class="layui-form-item">
+    <label class="layui-form-label">库存</label>
+    <div class="layui-input-block">
+      <input type="text" name="goods_num" value="{$goods.goods_num}"  placeholder="请输入商品库存数量" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+   <div class="layui-form-item">
+    <label class="layui-form-label">积分</label>
+    <div class="layui-input-block">
+      <input id="score" type="text" name="goods_score" value="{$goods.goods_score}"  placeholder="请输入商品积分" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">上架</label>
+    <div class="layui-input-block">
+      <input type="radio" name="goods_up" value="是" title="是" {if $goods.goods_up=="是"}checked{/if}>
+      <input type="radio" name="goods_up" value="否" title="否" {if $goods.goods_up=="否"}checked{/if}>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">商品属性</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="goods_new"  title="新品" {if $goods.goods_new=="是"}checked{/if}>
+      <input type="checkbox" name="good_best"  title="精品" {if $goods.goods_best=="是"}checked{/if}>
+      <input type="checkbox" name="good_hot"   title="热卖" {if $goods.goods_hot=="是"}checked{/if}>
+    </div>
+  </div>
+  <div class="layui-form-item">
+        <label class="layui-form-label">上传图片</label>
+        <div class="layui-input-block">
+        <input type="text" name="goods_img" value="{$goods.goods_img}" id="img" class="layui-input">
+      </div>
+        <div class="layui-input-inline">
+         <button type="button" class="layui-btn" id="up">
+             <i class="layui-icon">&#xe67c;</i>上传图片
+         </button>
+        </div>
+    </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+         <img style="display:block;margin-top:5px;" src="{$goods.goods_img}" id="goods_img" width="100" alt="暂无图片">
+      </div>
+    </div>
+     <div class="layui-form-item">
+        <label class="layui-form-label">上传轮播图</label>
+        <div class="layui-input-inline">
+           <input id="s" type="hidden" name="goods_simg" value="{:implode('|',$goods.goods_simg)}" class="layui-input">
+           <input id="m" type="hidden" name="goods_mimg" value="{:implode('|',$goods.goods_mimg)}" class="layui-input">
+           <input id="b" type="hidden" name="goods_bimg" value="{:implode('|',$goods.goods_bimg)}" class="layui-input">
+         </div>  
+         <div class="layui-input-block">
+         <button type="button" class="layui-btn" id="ups">
+             <i class="layui-icon">&#xe67c;</i>上传轮播图
+         </button>
+        </div>
+      </div>
+    <div class="layui-form-item">
+        <div id="goods_imgs" class="layui-input-block">
+            {foreach $goods.goods_simg as $k=>$v}
+            <img src="{$v}" alt="">
+            {/foreach}
+        </div>
+    </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">分类</label>
+    <div class="layui-input-block">
+      <select name="cate_id" lay-filter="cate">
+        <option value="0">请选择分类</option>
+        {volist name="cate" id="c"}
+          <option value="{$c.cate_id}" {if $goods.cate_id==$c.cate_id}selected{/if} >{:str_repeat('&ensp;',$c.level*4)}{$c.cate_name}</option>
+        {/volist}
+      </select>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">品牌</label>
+    <div class="layui-input-block">
+      <select name="brand_id" lay-filter="brand">
+        <option value="0">请选择品牌</option>
+        {volist name="brand" id="b"}
+          <option value="{$b.brand_id}" {if $goods.brand_id==$b.brand_id}selected{/if}>{$b.brand_name}</option>
+        {/volist}
+      </select>
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">请填写商品描述</label>
+    <div class="layui-input-block">
+     <textarea placeholder="请输入内容" class="layui-textarea" value="{$goods.goods_textarea}"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+  <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+</form>
+<!-- <script src="layui.js"></script> -->
+<script>
+//加载layui内置模块
+layui.use(['form','layer','jquery','upload'], function(){
+  var form = layui.form, layer = layui.layer, $ = layui.jquery, upload = layui.upload;
+  
+  //监听表单提交事件
+  form.on('submit(*)', function(data){
+      $.ajax({
+        url:"{:url('goods/save')}",
+        method:'post',
+        data:data.field,
+        success:function(data){
+          layer.msg(data.content,{icon:data.icon,time:1000},function(){
+            if(data.code==1){
+              location.href="{:url('goods/index')}";
+            };
+          });
+        },
+        dataType:'json'
+      });
+    return false;
+  });
+
+  //自动计算市场价格
+  $('#price').keyup(function(e){
+    var price=$(this).val();
+    var mprice=price*11/10;
+    $('#mprice').val(mprice);
+  });
+  //自动计算商品积分
+   $('#price').keyup(function(e){
+    var price=$(this).val();
+    var score=Math.round(price/100);
+    $('#score').val(score);
+  });
+
+  //渲染上传控件
+  upload.render({
+    elem:'#up',//上传按钮的选择器
+    url:"{:url('goods/up')}",//异步上传接口
+    exts:'jpg|peg',//上传文件的类型
+    size:2048,//允许上传的文件大小
+    chooes:function(obj){
+      obj.preview(function(index,file,result){
+        $('#goods_img').prop('src',result).width('150');
+      });
+    },
+    done:function(res,index,upload){
+      layer.msg(res.content,{icon:res.icon,time:1000},function(){
+        if(res.code==1){
+          $('#img').val(res.src); //服务器端返回的已上传的图片路径
+        };
+      });
+    }
+  });
+
+  //渲染多图片上传
+  upload.render({
+    elem:'#ups',//上传按钮的选择器
+    url:"{:url('goods/ups')}",//异步上传接口
+    exts:'jpg|peg',//上传文件的类型
+    size:2048,//允许上传的文件大小
+    multiple:true,//开启多图片上传
+    number: 4,//上传图片个数
+    choose:function(obj){
+      //清空隐藏域
+      $('#s').val('');$('#m').val('');$('#b').val('');
+      $('#goods_img').empty();
+      obj.preview(function(index,file,result){
+        $('#goods_imgs').append("<img src='"+result+"' width='150' />");
+      });
+    },
+    allDone:function(obj){
+      var str ='共上传'+obj.total+'图片,成功'+obj.successful+'张图片,失败'+obj.aborted+'张图片';
+      layer.msg(str,{icon:4,time:1000});
+    },
+    done:function(res,index,upload){
+      $('#s').val($('#s').val()+'|'+res.goods_simg);
+      $('#m').val($('#m').val()+'|'+res.goods_mimg);
+      $('#b').val($('#b').val()+'|'+res.goods_bimg);
+    }
+  });
+
+});
+</script>

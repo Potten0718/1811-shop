@@ -1,0 +1,49 @@
+<script type="text/javascript">
+	layui.use(['form','jquery','layer','upload'],function(){
+		var form=layui.form,jquery=layui.jquery,layer=layui.layer,upload=layui,upload;
+
+		form.verify({
+			checkOnly:function(value){
+				var text;
+				$.ajax({
+					url:"{}",
+					method:'post',
+					saync:false,
+					data:{friend_name:value},
+					success:function(data){
+						if(data>0){
+							text="友链名称已经已经存在";
+						}
+					},
+					dataType:'json'
+				});
+				return text;
+			}
+		});
+
+	upload.render({
+		elem:'#up',
+		exts:"jpg|png",
+		size:
+	});
+
+	form.on('submit(go)',function(data){
+		$.post(
+			"{}",
+			data.field,
+			function(msg){
+				layer.msg(msg.content,{icon:msg.icon,time:1000},function(){
+					if(msg.code==1){
+						location.href("{:url('friend/index')}");
+					}
+				});
+			},
+			'json'
+			)
+
+		return false;
+	});
+	
+
+	});
+</script>>

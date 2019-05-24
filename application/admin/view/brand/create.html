@@ -1,0 +1,97 @@
+<form class="layui-form  layui-form-pane"  >
+  <div class="layui-form-item" >
+    <label class="layui-form-label">品牌名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="brand_name"   lay-verify="required" placeholder="请输入品牌名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+   <div class="layui-form-item">
+    <label class="layui-form-label">是否显示</label>
+    <div class="layui-input-block">
+      <input type="radio" name="brand_show" value="是" title="是" checked>
+      <input type="radio" name="brand_show" value="否" title="否" >
+    </div>
+  </div>
+   <div class="layui-form-item">
+    <label class="layui-form-label">图片上传</label>
+    <div class="layui-input-block">
+      <input id="brand_logo" type="hidden" name="brand_logo">
+      <button id="up" type="button" class="layui-btn">
+        <i class="layui-icon">&#xe67c;</i>上传图片
+      </button>
+      <img src="" style="display:block;margin-top:5px;" id="preview" width="100" alt="暂无图片">
+    </div>
+  </div>
+<div class="layui-form-item" >
+    <label class="layui-form-label">品牌地址</label>
+    <div class="layui-input-block">
+      <input type="text" name="brand_url"   lay-verify="required|url" placeholder="请输入品牌地址" autocomplete="no" class="layui-input">
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">品牌排序</label>
+    <div class="layui-input-block">
+      <input type="text" name="brand_sort"   lay-verify="required|number" placeholder="请输入品牌排序" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="go">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+ 
+<script type="text/javascript">
+//加载layipt内置模块
+layui.use(['form','jquery','layer','upload'],function(){
+  var form=layui.form;
+  var $ = layui.jquery;
+  var layer=layui.layer;
+  var upload=layui.upload;
+
+  //渲染上传事件
+  upload.render({
+    elem:'#up',
+    url:"{:url('brand/upload')}",
+    exts:"jpg|peg",
+    size:204800,
+    choose:function(obj){
+      obj.preview(function(index,file,result){
+        $('#preview').prop('src',result);
+      });
+    },
+    done:function(res){
+      layer.msg(res.content,{icon:res.icon,time:1000},function(){
+        if(res.code==1){
+          $('#brand_logo').val(res.src);
+        };
+      });
+    }
+  });
+ 
+ //监听提交
+ form.on('submit(go)',function(data){
+    $.ajax({
+      url:"{:url('brand/save')}",
+      method:'post',
+      data:data.field,
+      success:function(data){
+        layer.msg(data.content,{icon:data.icon,time:1000},function(){
+          if(data.code==1){
+            location.href="{url:('brand/index')}";
+          };
+        });
+      },
+      dataType:'json'
+    });
+    return false;//阻止表单提交
+  });
+
+
+});
+
+
+
+</script>
+

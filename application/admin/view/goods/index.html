@@ -1,0 +1,183 @@
+<form class="layui-form" >
+	<div class="layui-form-item">
+		<div class="layui-form-inline">
+			<select  name="cate_id" id="">
+				<option value="">请选择分类信息</option>
+				{volist name="cate" id="c"}
+				<option value="{$c.cate_id}">{:str_repeat('--',$c.level)}{$c.cate_name}</option>
+				{/volist}
+			</select>
+		</div>
+		<div class="layui-input-inline">
+			<select name="brand_id" id="">
+				<option value="">请选择品牌信息</option>
+				{volist name="brand" id="b"}
+				<option value="{$b.brand_id}">{$b.brand_name}</option>
+				{/volist}
+			</select>
+		</div>
+	     	<div class="layui-input-inline">
+				<input type="text" name="goods_name" placeholder="请输入商品名称" class="layui-input" >
+			</div>
+			<div class="layui-input-inline">
+				<button class="layui-btn">搜索</button>
+		</div>
+	</div>
+</form>
+<table class="layui-table">
+<thead>
+    <tr>
+        <th><input type="checkbox" id="ck"></th>
+        <th>名称</th>
+        <th>价格</th>
+        <th>上架</th>
+        <th>新品</th>
+        <th>精品</th>
+        <th>热卖</th>
+        <th>库存</th>
+        <th>积分</th>
+        <th>分类</th>
+        <th>品牌</th>
+        <th>单图片</th>
+        <th>多图片</th>
+        <th>操作</th>
+    </tr>
+</thead>
+<tbody>
+    {volist name="data" id="vo"}
+    <tr>
+        <td><input type="checkbox" name="goods_id" value="{$vo.goods_id}"></td>
+        <td class="goods_name">{:substr($vo.goods_name,0,30)}</td>
+        <td>{$vo.goods_price}</td>
+        <td>{$vo.goods_up}</td>
+        <td>{$vo.goods_new}</td>
+        <td>{$vo.goods_best}</td>
+        <td>{$vo.goods_hot}</td>
+        <td>{$vo.goods_num}</td>
+        <td>{$vo.goods_score}</td>
+        <td>{$vo.cate.cate_name}</td>
+        <td>{$vo.brand.brand_name}</td>
+        <td><img src="{$vo.goods_img}" width="100" alt="暂无图片"></td>
+        <td width="110">
+            {foreach $vo.goods_simg as $k=>$v}
+            <img src="{$v}"  width="50" alt="暂无图片">
+            {/foreach}
+        </td>
+        <td>
+            [<a href="{:url('goods/edit',['goods_id'=>$vo.goods_id])}">编辑</a>]
+            [<a href="{:url('goods/delete',['goods_id'=>$vo.goods_id])}">删除</a>]
+        </td>
+    </tr>
+    {/volist}
+</tbody>
+</table>
+<button id="fx" class="layui-btn-sm layui-btn-primary">
+	<i class="layui-icon">反选</i>
+</button>
+<button id="del" class="layui-btn layui-btn-sm layui-btn-primary">
+	<i class="layui-icon">批量删除</i>
+</button>
+<script type="text/javascript">
+//商品名称即点即改
+layui.use(['form','jquery','layer'],function(){
+	var $ = layui.jquery, layer = layui.layer;
+	//通过类选择器，查找商品名称id,为其添加点击事件
+	$('.goods_name').click(function(){
+		var _this=$(this);
+		//判断td中input元素的个数，如果大于0，证明以存在input
+		if(_this.children('input').length>0){
+			return false;
+		};
+		//获取商品名称
+		var goods_text = _this.text();
+		//清空td
+		_this.empty();
+		//创建input元素，更改input样式，将原商品名称赋值给input
+		var ipt = $('<input type="text" />').css({'border-width':'0','background-color':_this.css('background-color')}).val(goods_text);
+		//将创建好的input元素，追加到td中
+		_this.append(ipt);
+		//让input元素获取焦点，并选取内容
+		ipt.focus().select();
+		//用户修改数据
+		//为input元素添加键盘事件
+		ipt.keyup(function(e){
+			//获取用户点击的案件编码
+			var keyCode=e.which;
+			//判断用户点击的是enter还是esc
+			if(keyCode==13){
+				//发送ajax请求，修改数据库数据
+				$.post(
+					"{:url('goods/editGoodsName')}",
+					{goods_id: _this.prev('td').children('input').val(),goods_name: ipt.val()},
+					function(data){
+						layer.msg(data.content,{icon:data.icon,time:1000},function(){
+							//如果data.code==1 证明数据修改成功 ，清空td,将新值添加到非表单元素td中
+							if(data.code==1){
+								_this.empty().text(ipt.val());
+							}else{
+								//如果修改失败，数据还原
+								_this.text(goods_text);
+							}
+						});
+					},
+					'json'
+					);
+			}else if(keyCode==27){
+				//数据还原
+				_this.empty();
+				_this.text(goods_text);
+			}
+		});
+		//为input元素添加焦点失去事件
+		ipt.blur(function(){
+			//数据还原
+			_this.empty();
+			_this.text(goods_text);
+		});
+	});
+
+	//全选、全不选
+	$('#ck').click(function(){
+		if($(this).prop('checked')){
+			$(':checkbox').prop('checked',true);
+		}else{
+			$(':checkbox').prop('checked',false);
+		}
+	});
+
+	//反选
+	$('#fx').click(function(){
+		$(':checkbox:gt(0)').each(function(){
+			if($(this).prop('checked')){
+				$(this).prop('checked',false);
+			}else{
+				$(this).prop('checked',true);
+			}
+		});
+	});	
+
+	//批量删除
+	$('#del').click(function(){
+		var ids=[];
+		$(':checkbox').each(function(){
+			if($(this).prop('checked')){
+				//向数组ids末尾添加数组元素(值为被选中的复选框的值)
+				ids.push($(this).val());
+			}
+		});
+		$.post(
+			"{:url('goods/dels')}",
+			{goods_id:ids},
+			function(msg){
+				layer.msg(msg.content,{icon:msg.icon,time:1000},function(){
+						if(msg.code==1){
+							history.go(0);
+						};
+				});
+			},
+			'json'
+		);
+	});	
+
+});
+</script>

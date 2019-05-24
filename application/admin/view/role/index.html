@@ -1,0 +1,24 @@
+<table class="layui-table">
+      <colgroup>
+        <col width="150">
+        <col width="200">
+        <col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>角色名</th>
+          <th>描述</th>
+          <th>操作</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {volist name="data" id="vo"}
+        <tr>
+          <td>{$vo.role_name}</td>
+          <td>{$vo.role_content}</td>
+          <td>[<a href="{:url('role/delete',['role_id'=>$vo.role_id])}">删除</a>][<a href="{:url('role/edit',['role_id'=>$vo.role_id])}">修改</a>]</td>
+        </tr>
+        {/volist}
+      </tbody>
+</table>
+{$limt|raw}

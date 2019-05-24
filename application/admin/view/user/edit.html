@@ -1,0 +1,51 @@
+<form class="layui-form  layui-form-pane" method="post" action="{:url('user/update')}">
+  <div class="layui-form-item" >
+    <input type="hidden" name="admin_id" value="{$data.admin_id}" >
+    <label class="layui-form-label">用户名</label>
+    <div class="layui-input-block">
+      <input type="text" name="admin_name"   lay-verify="" placeholder="请输入用户名" value="{$data.admin_name}" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">电话</label>
+    <div class="layui-input-block">
+      <input type="text" name="admin_tel"   lay-verify="" placeholder="请输入电话" value="{$data.admin_tel}" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">邮箱</label>
+    <div class="layui-input-block">
+      <input type="text" name="admin_email"   lay-verify="" placeholder="请输入邮箱" value="{$data.admin_email}" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">状态</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="admin_status"    value="开启" lay-verify="" lay-skin="switch" lay-text="开启|关闭" {if $data.admin_status=='开启'}checked{/if}>
+    </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+ 
+<script>
+//Demo
+// layui.use('form', function(){
+//   var form = layui.form;
+  
+//   //监听提交
+//   form.on('submit(formDemo)', function(data){
+//     layer.msg(JSON.stringify(data.field));
+//     return false;
+//   });
+// });
+
+//加载layipt内置模块
+layui.use('form',function(){
+
+});
+
+</script>

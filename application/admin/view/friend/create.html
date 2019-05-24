@@ -1,0 +1,98 @@
+<form class="layui-form layui-form-pane" action="">
+  <div class="layui-form-item">
+    <label class="layui-form-label">友链名称</label>
+    <div class="layui-input-inline">
+      <input type="text" name="friend_name" required  lay-verify="required|checkOnly" placeholder="请输入友链名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">友链网址</label>
+    <div class="layui-input-inline">
+      <input type="text" name="friend_url" required lay-verify="required|url" placeholder="请输入友链网址" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+   <div class="layui-form-item">
+    <label class="layui-form-label">图片上传</label>
+    <div class="layui-input-block">
+      <input id="friend_logo" type="hidden" name="friend_logo">
+      <button id="up" type="button" class="layui-btn">
+        <i class="layui-icon">&#xe67c;</i>上传图片
+      </button>
+      <img src="" style="display:block" id="preview" width="100" alt="暂无图片">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+ 
+<script>
+//Demo
+layui.use(['form','jquery','layer','upload'], function(){
+  var form = layui.form,layer=layui.layer,$=layui.jquery,upload=layui.upload;
+  
+  form.verify({
+    checkOnly:function(value){
+      var text;
+      $.ajax({
+        url:"{:url('friend/checkOnly')}",
+        method:"post",
+        data:{friend_name:value},
+        async:false,
+        success:function(data){
+            if(data>0){
+              text:'友链名称已经存在';
+            }
+        },
+        dataType:'json'
+          });
+      return text;
+        }
+      });
+  //渲染上传事件
+  upload.render({
+    elem:'#up',
+    url:"{:url('friend/upload')}",
+    exts:"jpg|peg",
+    size:204800,
+    choose:function(obj){
+      obj.preview(function(index,file,result){
+        $('#preview').prop('src',result);
+      });
+    },
+    done:function(res){
+      layer.msg(res.content,{icon:res.icon,time:1000},function(){
+        if(res.code==1){
+          $('#friend_logo').val(res.src);
+        };
+      });
+    }
+  });
+
+
+
+ //监听提交
+ form.on('submit(formDemo)',function(data){
+    $.ajax({
+      url:"{:url('friend/save')}",
+      method:'post',
+      data:data.field,
+      success:function(data){
+        layer.msg(data.content,{icon:data.icon,time:1000},function(){
+          if(data.code==1){
+            location.href="{url:('friend/index')}";
+          };
+        });
+      },
+      dataType:'json'
+    });
+    return false;//阻止表单提交
+  });
+});
+</script>
